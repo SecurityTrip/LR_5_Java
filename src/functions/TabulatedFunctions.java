@@ -23,7 +23,7 @@ public class TabulatedFunctions {
 
     public static void outputTabulatedFunction(TabulatedFunction function, OutputStream out) {
         try (DataOutputStream dos = new DataOutputStream(out)) {
-            int pointsCount = function.getAvalablePointsCount();
+            int pointsCount = function.getAvalableNumberOfPoints();
             dos.writeInt(pointsCount);
             for (int i = 0; i < pointsCount; ++i) {
                 dos.writeDouble(function.getPointX(i));
@@ -51,7 +51,7 @@ public class TabulatedFunctions {
 
     public static void writeTabulatedFunction(TabulatedFunction function, Writer out) {
         try (BufferedWriter bw = new BufferedWriter(out)) {
-            int pointsCount = function.getAvalablePointsCount();
+            int pointsCount = function.getAvalableNumberOfPoints();
             bw.write(pointsCount + " ");
             for (int i = 0; i < pointsCount; i++) {
                 bw.write(function.getPointX(i) + " " + function.getPointY(i) + " ");

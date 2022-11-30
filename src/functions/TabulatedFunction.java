@@ -2,7 +2,7 @@ package functions;
 
 public interface TabulatedFunction extends Function {
     public void print();
-    public int getAvalablePointsCount();
+    public int getAvalableNumberOfPoints();
     public FunctionPoint getPoint(int index) throws FunctionPointIndexOutOfBoundsException;
     public void setPoint(int index, FunctionPoint point) throws FunctionPointIndexOutOfBoundsException, InappropriateFunctionPointException;
     public double getPointX(int index) throws FunctionPointIndexOutOfBoundsException;
@@ -12,4 +12,5 @@ public interface TabulatedFunction extends Function {
     public void deletePoint(int index) throws FunctionPointIndexOutOfBoundsException, InappropriateFunctionPointException;
     public void  addPoint(FunctionPoint point) throws InappropriateFunctionPointException;
     public boolean correctIndex(int index);
+
 }

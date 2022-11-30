@@ -1,6 +1,9 @@
 package functions;
 
-public class LinkedListTabulatedFunction implements TabulatedFunction {
+import java.util.Arrays;
+import java.util.Objects;
+
+public class LinkedListTabulatedFunction implements TabulatedFunction, Cloneable {
 
     private static class FunctionNode {
         private FunctionPoint point;
@@ -115,7 +118,7 @@ public class LinkedListTabulatedFunction implements TabulatedFunction {
         System.out.println();
     }
 
-    public int getAvalablePointsCount() {
+    public int getAvalableNumberOfPoints() {
         return pointsCount;
     }
 
@@ -234,14 +237,14 @@ public class LinkedListTabulatedFunction implements TabulatedFunction {
         if (!correctIndex(index))
             throw new FunctionPointIndexOutOfBoundsException(index);
 
-        if (getAvalablePointsCount() <= 2)
+        if (getAvalableNumberOfPoints() <= 2)
             throw new IllegalStateException();
 
         deleteNodeByIndex(index);
     }
 
     public boolean correctIndex(int index) {
-        return index >= 0 && index < getAvalablePointsCount();
+        return index >= 0 && index < getAvalableNumberOfPoints();
     }
 
     public boolean checkLies(FunctionNode node, double x) {
@@ -261,5 +264,50 @@ public class LinkedListTabulatedFunction implements TabulatedFunction {
         }
 
         return x > leftX && x < rightX;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        FunctionNode node = head.next;
+        for (int i = 0; i < this.pointsCount; ++i) {
+            builder.append(i).append(": ").append(node.point.toString()).append('\n');
+            node = node.next;
+        }
+        return builder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        FunctionNode node = head;
+        int result = Objects.hashCode(pointsCount);
+        for (int i = 0; i < pointsCount; ++i) {
+            node = node.next;
+            result += Objects.hashCode(node.point);
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this.hashCode() == o.hashCode()) return true;
+        else return false;
+    }
+
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        var length = this.getAvalableNumberOfPoints();
+        FunctionPoint[] fps = new FunctionPoint[this.getAvalableNumberOfPoints()];
+        for (int i = 0; i < length; ++i) {
+            fps[i] = new FunctionPoint(this.getPoint(i));
+        }
+        try {
+            return new LinkedListTabulatedFunction(fps);
+        } catch (InappropriateFunctionPointException e) {
+            e.printStackTrace();
+        }
+        return super.clone();
     }
 }

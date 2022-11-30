@@ -1,14 +1,16 @@
 package functions;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
-public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
-    private FunctionPoint[] mass;
-    private int AvalablePointsCount;
+public class ArrayTabulatedFunction implements TabulatedFunction, Serializable, Cloneable {
+    private FunctionPoint[] ValuesArray;
+    private int AvalableNumberOfPoints;
 
     public void print() {
-        for(int i = 0; i < AvalablePointsCount; i++) {
-            System.out.println("(" + mass[i].getX() + ";" + mass[i].getY() + ")");
+        for(int i = 0; i < AvalableNumberOfPoints; i++) {
+            System.out.println("(" + ValuesArray[i].getX() + ";" + ValuesArray[i].getY() + ")");
         }
         System.out.println();
     }
@@ -17,10 +19,10 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         if (massPoints.length < 2 || checkAbscissa(massPoints)) {
             throw new IllegalArgumentException();
         } else {
-            mass = new FunctionPoint[massPoints.length];
+            ValuesArray = new FunctionPoint[massPoints.length];
             for (int i = 0; i < massPoints.length; ++i) {
-                mass[i] = massPoints[i];
-                ++AvalablePointsCount;
+                ValuesArray[i] = massPoints[i];
+                ++AvalableNumberOfPoints;
             }
         }
     }
@@ -39,10 +41,10 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         if (leftX >= rightX || pointsCount < 2) {
             throw new IllegalArgumentException();
         } else {
-            mass = new FunctionPoint[pointsCount];
+            ValuesArray = new FunctionPoint[pointsCount];
             double interval = (rightX - leftX) / (pointsCount - 1);
             for (int i = 0; i < pointsCount; ++i) {
-                mass[i] = new FunctionPoint(leftX + interval * i, 0.0);
+                ValuesArray[i] = new FunctionPoint(leftX + interval * i, 0.0);
             }
         }
     }
@@ -51,11 +53,11 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         if (leftX >= rightX || values.length < 2) {
             throw new IllegalArgumentException();
         } else {
-            mass = new FunctionPoint[values.length];
+            ValuesArray = new FunctionPoint[values.length];
             double interval = (rightX - leftX) / (values.length - 1);
             for (int i = 0; i < values.length; ++i) {
-                mass[i] = new FunctionPoint(leftX + interval * i, values[i]);
-                AvalablePointsCount += 1;
+                ValuesArray[i] = new FunctionPoint(leftX + interval * i, values[i]);
+                AvalableNumberOfPoints += 1;
             }
         }
     }
@@ -65,25 +67,25 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
     }
 
     public double getRightDomainBorder() {
-        return getPointX(getAvalablePointsCount() - 1);
+        return getPointX(getAvalableNumberOfPoints() - 1);
     }
 
-    public int getAvalablePointsCount() {
-        return AvalablePointsCount;
+    public int getAvalableNumberOfPoints() {
+        return AvalableNumberOfPoints;
     }
 
     public double getFunctionValue(double x) {
         if (x < getLeftDomainBorder() || x > getRightDomainBorder())
             return Double.NaN;
 
-        for (int i = 0; i < getAvalablePointsCount(); ++i) {
-            if (mass[i].getX() == x) {
-                return mass[i].getY();
+        for (int i = 0; i < getAvalableNumberOfPoints(); ++i) {
+            if (ValuesArray[i].getX() == x) {
+                return ValuesArray[i].getY();
             }
         }
         if (getLeftDomainBorder() <= x && getRightDomainBorder() >= x) {
             double leftY = getPointY(0);
-            double rightY = getPointY(getAvalablePointsCount() - 1);
+            double rightY = getPointY(getAvalableNumberOfPoints() - 1);
             double k = (rightY - leftY) / (getRightDomainBorder() - getLeftDomainBorder()) ;
             double b = rightY - k * getRightDomainBorder();
             return k * x + b;
@@ -94,7 +96,7 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
 
     public FunctionPoint getPoint(int index) throws FunctionPointIndexOutOfBoundsException {
         if (correctIndex(index)) {
-            return mass[index];
+            return ValuesArray[index];
         } else {
             throw new FunctionPointIndexOutOfBoundsException();
         }
@@ -108,7 +110,7 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
             throw new InappropriateFunctionPointException();
         }
 
-        mass[index] = point;
+        ValuesArray[index] = point;
     }
 
     public double getPointX(int index) throws FunctionPointIndexOutOfBoundsException {
@@ -151,33 +153,33 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         if (!correctIndex(index)) {
             throw new FunctionPointIndexOutOfBoundsException();
         }
-        if (getAvalablePointsCount() < 3) {
+        if (getAvalableNumberOfPoints() < 3) {
             throw new InappropriateFunctionPointException();
         }
 
-        AvalablePointsCount = getAvalablePointsCount() - 1;
-        System.arraycopy(mass, index + 1, mass, index, getAvalablePointsCount() - index);
+        AvalableNumberOfPoints = getAvalableNumberOfPoints() - 1;
+        System.arraycopy(ValuesArray, index + 1, ValuesArray, index, getAvalableNumberOfPoints() - index);
     }
 
     public void  addPoint(FunctionPoint point) throws InappropriateFunctionPointException {
-        for (int i = 0; i < getAvalablePointsCount(); ++i) {
+        for (int i = 0; i < getAvalableNumberOfPoints(); ++i) {
             if(getPointX(i) == point.getX()) {
                 throw new InappropriateFunctionPointException();
             }
         }
 
-        for (int i = 0; i < getAvalablePointsCount(); ++i) {
+        for (int i = 0; i < getAvalableNumberOfPoints(); ++i) {
             if (point.getX() >= getPointX(i) && point.getX() <= getPointX(i + 1)) {
-                if (getAvalablePointsCount() == mass.length) {
-                    FunctionPoint[] old = new FunctionPoint[mass.length];
-                    System.arraycopy(mass, 0, old, 0, mass.length);
+                if (getAvalableNumberOfPoints() == ValuesArray.length) {
+                    FunctionPoint[] old = new FunctionPoint[ValuesArray.length];
+                    System.arraycopy(ValuesArray, 0, old, 0, ValuesArray.length);
 
-                    mass = new FunctionPoint[mass.length + 1];
-                    System.arraycopy(old, 0, mass, 0, old.length);
+                    ValuesArray = new FunctionPoint[ValuesArray.length + 1];
+                    System.arraycopy(old, 0, ValuesArray, 0, old.length);
                 }
-                System.arraycopy(mass, i + 1, mass, i + 2, getAvalablePointsCount() - i - 1);
+                System.arraycopy(ValuesArray, i + 1, ValuesArray, i + 2, getAvalableNumberOfPoints() - i - 1);
                 setPoint(i + 1, point);
-                AvalablePointsCount = getAvalablePointsCount() + 1;
+                AvalableNumberOfPoints = getAvalableNumberOfPoints() + 1;
 
                 return;
             }
@@ -185,6 +187,37 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
     }
 
     public boolean correctIndex(int index) {
-        return index >= 0 && index < getAvalablePointsCount();
+        return index >= 0 && index < getAvalableNumberOfPoints();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < this.AvalableNumberOfPoints; ++i) {
+            builder.append(i).append(": ").append(ValuesArray[i].toString()).append('\n');
+        }
+        return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+       if(this.hashCode() == o.hashCode()) return true;
+       else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(getAvalableNumberOfPoints());
+        for (int i = 0; i < getAvalableNumberOfPoints(); ++i) {
+            result += Objects.hashCode(ValuesArray[i]);
+        }
+        return result;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+
 }
