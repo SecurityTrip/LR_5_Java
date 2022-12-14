@@ -15,7 +15,7 @@ public class Main{
 
         try {
             TabulatedFunction arr = new ArrayTabulatedFunction(leftX, rightX, v);
-            TabulatedFunction arr1 = new LinkedListTabulatedFunction(leftX, rightX, v);
+            ArrayTabulatedFunction arr1 = new ArrayTabulatedFunction(leftX, rightX, v);
             TabulatedFunction arr2 = new LinkedListTabulatedFunction(leftX2, rightX2, v2);
 
             System.out.println(arr.toString());
@@ -33,19 +33,30 @@ public class Main{
             System.out.println("Hash code arr2 : " + arr2.hashCode());
             System.out.println();
 
-            arr1 = new LinkedListTabulatedFunction(leftX, rightX + 0.000001, v);
+            arr1 = new ArrayTabulatedFunction(leftX, rightX + 0.000001, v);
             System.out.println("Hash code changed arr1 : " + arr1.hashCode());
 
-            Object arr3 = arr.clone();
-            Object arr4 = arr2.clone();
-            System.out.println(arr.equals(arr3));
-            System.out.println(arr2.equals(arr4));
-            System.out.println();
+
+
+
+            try{
+                Object tmp = null;
+                tmp = arr1.clone2();
+                System.out.println("Equals");
+                System.out.println(arr1.equals(tmp));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            //Object arr4 = arr2.clone();
+            //System.out.println(arr.equals(arr3));
+            //System.out.println(arr2.equals(arr4));
+            //System.out.println();
 
             arr = new ArrayTabulatedFunction(leftX, rightX + 0.8, v);
             arr2 = new ArrayTabulatedFunction(leftX, rightX + 0.3, v);
-            System.out.println(arr.equals(arr3));
-            System.out.println(arr2.equals(arr4));
+            //System.out.println(arr.equals(arr3));
+            //System.out.println(arr2.equals(arr4));
         } catch (InappropriateFunctionPointException e) {
             throw new RuntimeException(e);
         }

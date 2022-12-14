@@ -15,6 +15,11 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable, 
         System.out.println();
     }
 
+    private ArrayTabulatedFunction(ArrayTabulatedFunction arr){
+        arr.ValuesArray = this.ValuesArray;
+        arr.AvalableNumberOfPoints = this.AvalableNumberOfPoints;
+    }
+
     public ArrayTabulatedFunction(FunctionPoint[] massPoints) throws IllegalArgumentException {
         if (massPoints.length < 2 || checkAbscissa(massPoints)) {
             throw new IllegalArgumentException();
@@ -215,8 +220,45 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable, 
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public Object clone() throws CloneNotSupportedException {
+        int size = this.getAvalableNumberOfPoints();
+        FunctionPoint[] t = new FunctionPoint[this.getAvalableNumberOfPoints()];
+        for(int i = 0; i < size; i++){
+            t[i] = new FunctionPoint(this.getPoint(i));
+        }
+
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public Object clone2(){
+        int size = this.getAvalableNumberOfPoints();
+        FunctionPoint[] tmp = new FunctionPoint[this.getAvalableNumberOfPoints()];
+        for (int i = 0; i < this.AvalableNumberOfPoints; i++){
+            tmp[i] = this.ValuesArray[i];
+        }
+
+        return 0;
     }
 
 

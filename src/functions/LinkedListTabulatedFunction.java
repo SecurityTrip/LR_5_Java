@@ -297,17 +297,13 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Cloneable
 
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-        var length = this.getAvalableNumberOfPoints();
-        FunctionPoint[] fps = new FunctionPoint[this.getAvalableNumberOfPoints()];
-        for (int i = 0; i < length; ++i) {
-            fps[i] = new FunctionPoint(this.getPoint(i));
+    public Object clone() throws CloneNotSupportedException {
+        int size = this.getAvalableNumberOfPoints();
+        FunctionPoint[] t = new FunctionPoint[this.getAvalableNumberOfPoints()];
+        for(int i = 0; i < size; i++){
+            t[i] = new FunctionPoint(this.getPoint(i));
         }
-        try {
-            return new LinkedListTabulatedFunction(fps);
-        } catch (InappropriateFunctionPointException e) {
-            e.printStackTrace();
-        }
-        return super.clone();
+
+        return null;
     }
 }
